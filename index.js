@@ -13,13 +13,16 @@ app.use(express.json());
 
 import dotenv from "dotenv"
 dotenv.config();
-const connectDB=async()=>{
+let isConnected=false;
+
+async function connectToMongoDB(){
     try{
         await
         mongoose.connect(process.env.MONGO_URI,{
             useNewUrlParser:true,
             useUnifiedTopology:true
         });
+        let isConnected=true;
         console.log("MongoDB connected successfully")
     } catch(err){
         console.error("MongoDB Connection is failed ",err.message);
@@ -27,7 +30,9 @@ const connectDB=async()=>{
     }
 };
 
-
+app.use((req,res,next)=>{
+    next();
+})
 
 
 
@@ -107,8 +112,8 @@ app.post('/enqu',(req,res)=>{
     // productschema.create(req.body).then(re=>res.json(re)).catch(er=>res.json(er))
 })
 
-export default connectDB();
+module.exports=app
 
-app.listen(process.env.PORT,()=>{
-    console.log("server started")
-})
+// app.listen(process.env.PORT,()=>{
+//     console.log("server started")
+// })
